@@ -1,0 +1,24 @@
+{
+  "name": "tilapia-system",
+  "services": [
+    {
+      "name": "backend",
+      "source": {
+        "type": "dockerfile",
+        "path": "backend/Dockerfile"
+      },
+      "env": {
+        "PORT": "4000",
+        "JWT_SECRET": "generate",
+        "ADMIN_EMAIL": "admin@heroent.local",
+        "ADMIN_PASSWORD": "admin123",
+        "DATABASE_URL": "${{ Postgres.DATABASE_URL }}",
+        "CORS_ORIGIN": "https://your-frontend-domain.netlify.app"
+      }
+    },
+    {
+      "name": "Postgres",
+      "type": "postgres"
+    }
+  ]
+}

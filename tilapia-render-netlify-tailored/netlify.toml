@@ -1,0 +1,17 @@
+[build]
+  publish = "frontend"
+  command = ""
+
+# Redirect SPA routes to index
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+
+
+# Proxy API calls to Render backend (replace with your actual Render URL)
+[[redirects]]
+  from = "/api/*"
+  to = "https://YOUR-RENDER-BACKEND.onrender.com/:splat"
+  status = 200
+  force = true

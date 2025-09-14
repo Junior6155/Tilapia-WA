@@ -1,0 +1,133 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  ADMIN
+  STAFF
+  ACCOUNTANT
+}
+
+enum FishSize {
+  TSS
+  SB
+  Eco
+  Reg
+  S1
+  S2
+  S3
+}
+
+enum SaleType {
+  cash
+  credit
+}
+
+enum StockType {
+  add
+  sale
+  adjustment
+  damage
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  name      String
+  email     String   @unique
+  password  String
+  role      Role     @default(STAFF)
+  createdAt DateTime @default(now())
+}
+
+model Customer {
+  id             Int      @id @default(autoincrement())
+  name           String
+  phone          String   @unique
+  location       String?
+  email          String?
+  type           String   @default("regular")
+  creditLimit    Float    @default(1000)
+  currentDebt    Float    @default(0)
+  notes          String?
+  dateAdded      DateTime @default(now())
+  lastSale       DateTime?
+  totalPurchases Float    @default(0)
+  sales          Sale[]
+  payments       Payment[]
+}
+
+model Price {
+  id        Int      @id @default(autoincrement())
+  fishSize  FishSize
+  priceKg   Float
+  updatedAt DateTime @default(now())
+}
+
+model InventoryItem {
+  id          Int      @id @default(autoincrement())
+  fishSize    FishSize @unique
+  stockKg     Float    @default(0)
+  costPriceKg Float    @default(0)
+  lastUpdated DateTime @default(now())
+}
+
+model Sale {
+  id          Int       @id @default(autoincrement())
+  date        DateTime
+  timestamp   DateTime  @default(now())
+  customer    Customer  @relation(fields: [customerId], references: [id])
+  customerId  Int
+  fishSize    FishSize
+  quantityKg  Float
+  unitPrice   Float
+  totalAmount Float
+  type        SaleType
+  notes       String?
+}
+
+model StockMovement {
+  id        Int       @id @default(autoincrement())
+  date      DateTime
+  fishSize  FishSize
+  type      StockType
+  quantity  Float
+  reference String?
+}
+
+model Payment {
+  id        Int      @id @default(autoincrement())
+  date      DateTime
+  customer  Customer @relation(fields: [customerId], references: [id])
+  customerId Int
+  amount    Float
+  method    String
+  reference String?
+  notes     String?
+}
+
+model Expense {
+  id          Int      @id @default(autoincrement())
+  date        DateTime
+  category    String
+  description String
+  amount      Float
+  method      String
+  receipt     String?
+}
+
+model Settings {
+  id                    Int     @id @default(1)
+  businessName          String  @default("Tilapia Distribution Company")
+  businessPhone         String  @default("")
+  businessEmail         String  @default("")
+  maxCreditLimit        Float   @default(1000)
+  lowStockAlertKg       Float   @default(50)
+  bulkDiscountThreshold Float   @default(100)
+  bulkDiscountRate      Float   @default(5)
+  currency              String  @default("₵")
+}

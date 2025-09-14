@@ -1,0 +1,9 @@
+{
+  "name": "Tilapia Distribution Management System",
+  "short_name": "Tilapia",
+  "start_url": "/index.html",
+  "display": "standalone",
+  "background_color": "#e3f2fd",
+  "theme_color": "#1565c0",
+  "icons": []
+}
